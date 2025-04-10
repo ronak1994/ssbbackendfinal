@@ -276,12 +276,11 @@ cron.schedule('0 0 * * *', async() => {
 ); // 10000 milliseconds = 10 seconds
 
 
-cron.schedule('21 6 * * *', async() => {
+cron.schedule('25 18 * * *', async () => {
     await distribute50kDailyRewards();
     console.log("This function runs after 10 secondssss.");
-    },{
-      timezone: 'Etc/UTC' // 🔥 This ensures it runs at GMT-00
-    }
-  );
+  }, {
+    timezone: 'Etc/UTC' // Runs at 18:25 UTC (6:25 PM GMT)
+  });
 
 console.log('⏳ Cron job set to run daily at GMT+00.');
