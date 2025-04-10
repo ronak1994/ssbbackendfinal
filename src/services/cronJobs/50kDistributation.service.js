@@ -205,8 +205,8 @@ export const distribute50kDailyRewards = async () => {
        console.log(`Total eligible users: Pool A - ${poolAWallets}, Pool B - ${poolBWallets}`);
         
         if(poolAWallets.length>0){
-            const x = ['0x26274263027575e7045362daB332c25B6e7c050E'];
-        const txA = fiftyKContract.methods.distribute50kDailyDistribution(x,[]);
+           
+        const txA = fiftyKContract.methods.distribute50kDailyDistribution(poolAWallets,[]);
         try {
             const gas = await txA.estimateGas({ from: account.address });
             const gasPrice = await web3.eth.getGasPrice();
@@ -230,30 +230,30 @@ export const distribute50kDailyRewards = async () => {
         }
        }
         
-        // if(poolBWallets.length>0){
-        // const txB = fiftyKContract.methods.distribute50kDailyDistribution([], poolBWallets);
-        // try {
-        //     const gas = await txB.estimateGas({ from: account.address });
-        //     const gasPrice = await web3.eth.getGasPrice();
-        //     const gasLimit = BigInt(gas) * BigInt(12) / BigInt(10);
-        //     const CONTRACT_ADDRESS = process.env.FIFTYK_DISTRIBUTION;
-        //     const txData = {
-        //         from: account.address,
-        //         to: CONTRACT_ADDRESS,
-        //         gas: Number(gasLimit),
-        //         gasPrice,
-        //         data: txB.encodeABI()
-        //     };
+        if(poolBWallets.length>0){
+        const txB = fiftyKContract.methods.distribute50kDailyDistribution([], poolBWallets);
+        try {
+            const gas = await txB.estimateGas({ from: account.address });
+            const gasPrice = await web3.eth.getGasPrice();
+            const gasLimit = BigInt(gas) * BigInt(12) / BigInt(10);
+            const CONTRACT_ADDRESS = process.env.FIFTYK_DISTRIBUTION;
+            const txData = {
+                from: account.address,
+                to: CONTRACT_ADDRESS,
+                gas: Number(gasLimit),
+                gasPrice,
+                data: txB.encodeABI()
+            };
     
-        //     const signedTx = await web3.eth.accounts.signTransaction(txData, formattedPrivateKey);
-        //     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+            const signedTx = await web3.eth.accounts.signTransaction(txData, formattedPrivateKey);
+            const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     
-        //     console.log("✅ Tx Successful! Hash:", receipt.transactionHash);
-        //     await getTransactionDetails(receipt.transactionHash,"pool_B_reward");
-        // } catch (error) {
-        //     console.error("❌ Transaction Failed:", error.message);
-        // }
-        // }
+            console.log("✅ Tx Successful! Hash:", receipt.transactionHash);
+            await getTransactionDetails(receipt.transactionHash,"pool_B_reward");
+        } catch (error) {
+            console.error("❌ Transaction Failed:", error.message);
+        }
+        }
 
      } catch (error) {
          console.error('Error distributing daily 50k rewards:', error);
@@ -274,12 +274,5 @@ cron.schedule('0 0 * * *', async() => {
   }
 ); // 10000 milliseconds = 10 seconds
 
-
-cron.schedule('31 18 * * *', async () => {
-    await distribute50kDailyRewards();
-    console.log("This function runs after 10 secondssss.");
-  }, {
-    timezone: 'Etc/UTC' // Runs at 18:25 UTC (6:25 PM GMT)
-  });
 
 console.log('⏳ Cron job set to run daily at GMT+00.');
