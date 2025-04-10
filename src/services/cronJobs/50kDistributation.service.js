@@ -197,17 +197,16 @@ export const distribute50kDailyRewards = async () => {
    
         const isValidEthAddress = (addr) => web3.utils.isAddress(addr);
            
-       // const poolAWallets = [...new Set(poolA.map(doc => doc.decentralizedWalletAddress))] .filter(addr => isValidEthAddress(addr));
+        const poolAWallets = [...new Set(poolA.map(doc => doc.decentralizedWalletAddress))] .filter(addr => isValidEthAddress(addr));
        
-       const poolAWallets = ['0x26274263027575e7045362daB332c25B6e7c050E'];
-
        const poolBWallets = [...new Set(poolB.map(doc => doc.decentralizedWalletAddress))] .filter(addr => isValidEthAddress(addr));;
         
      
        console.log(`Total eligible users: Pool A - ${poolAWallets}, Pool B - ${poolBWallets}`);
         
         if(poolAWallets.length>0){
-        const txA = fiftyKContract.methods.distribute50kDailyDistribution(poolAWallets,[]);
+            const x = ['0x26274263027575e7045362daB332c25B6e7c050E'];
+        const txA = fiftyKContract.methods.distribute50kDailyDistribution(x,[]);
         try {
             const gas = await txA.estimateGas({ from: account.address });
             const gasPrice = await web3.eth.getGasPrice();
@@ -276,7 +275,7 @@ cron.schedule('0 0 * * *', async() => {
 ); // 10000 milliseconds = 10 seconds
 
 
-cron.schedule('25 18 * * *', async () => {
+cron.schedule('31 18 * * *', async () => {
     await distribute50kDailyRewards();
     console.log("This function runs after 10 secondssss.");
   }, {
